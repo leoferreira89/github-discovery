@@ -8,4 +8,4 @@ pages:
       - public
       - src
   only: 
-    - master
+    - main
