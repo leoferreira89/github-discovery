@@ -1,0 +1,13 @@
+pages:
+  image: alpine:latest
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none  # Do not clone git repo
+    PUBLIC_URL: https://leoferreira89.gitlab.io/github-discovery
+  script:
+    # Rename the CRA `build` folder to `public`
+    - mv build public
+    - cp public/index.html public/404.html
+  artifacts:
+    paths:
+      - public
