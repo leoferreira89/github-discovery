@@ -1,6 +1,6 @@
 {
+  "homepage": "https://leoferreira89.gitlab.io/github-discovery",
   "name": "github-discovery",
-  "homepage": "github-discovery",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
