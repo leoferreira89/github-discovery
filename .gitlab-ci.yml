@@ -2,7 +2,7 @@ image: python:latest
 
 pages:
   variables: 
-    PUBLIC_URL: https://leoferreira89.gitlab.io/github-discovery/
+    PUBLIC_URL: https://leoferreira89.gitlab.io/
   script:
     - echo "Doing nothing..."
   artifacts:
