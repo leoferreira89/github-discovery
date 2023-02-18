@@ -1,12 +1,28 @@
-image: python:latest
+stages:
+  - build
+  - deploy
+
+build:
+  image: node:14.15.3-buster-slim
+  stage: build
+  script:
+    - yarn install
+    - yarn build
+  artifacts:
+    paths:
+      - build/
 
 pages:
-  variables: 
+  image: alpine:latest
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none # Do not clone git repo
+    NODE_ENV: production
     PUBLIC_URL: https://leoferreira89.gitlab.io/
   script:
-    - echo "Doing nothing..."
+    # Rename the CRA `build` folder to `public`
+    - mv build public
+    - cp public/index.html public/404.html
   artifacts:
     paths:
       - public
-  only: 
-    - main
