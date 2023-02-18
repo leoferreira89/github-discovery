@@ -17,8 +17,7 @@ pages:
   stage: deploy
   variables:
     GIT_STRATEGY: none # Do not clone git repo
-    NODE_ENV: production
-    PUBLIC_URL: https://leoferreira89.gitlab.io/
+    PUBLIC_URL: https://leoferreira89.gitlab.io/github-discovery
   script:
     # Rename the CRA `build` folder to `public`
     - mv build public
