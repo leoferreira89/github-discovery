@@ -3,8 +3,9 @@ image: python:latest
 pages:
   script:
     - echo "Doing nothing..."
-    artifacts:
-      paths:
-        - public
-    only: 
-      - master
+  artifacts:
+    paths:
+      - public
+      - src
+  only: 
+    - master
