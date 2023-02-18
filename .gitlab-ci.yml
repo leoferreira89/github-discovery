@@ -5,7 +5,6 @@ pages:
     - echo "Doing nothing..."
   artifacts:
     paths:
-      - public
-      - src
+      - build
   only: 
     - main
