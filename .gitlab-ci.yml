@@ -2,8 +2,7 @@ image: python:latest
 
 pages:
   script:
-    - mv build public
-    - cp public/index.html public/404.html
+    - echo "Doing nothing..."
   artifacts:
     paths:
       - public
