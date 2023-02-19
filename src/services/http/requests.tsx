@@ -10,12 +10,20 @@ const baseUrl = 'https://api.github.com/search/repositories?q=';
 export const HTTPProvider = ({children}: any) => {
 
     const getRepositoriesByTopic = async ({topic, perPage = 10, page = 1}: {topic: string, perPage: number, page: number}) => {
-        return await axios.get(`${baseUrl}topic:${topic}&per_page=${perPage}&page=${page}`)
+        const axiosOptions = {headers: {
+            'Content-Type': 'application/json',
+            'Authorization': "Bearer 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"
+          }}
+        return await axios.get(`${baseUrl}topic:${topic}&per_page=${perPage}&page=${page}`, axiosOptions)
 
     }
     
     const getMultipleRepositoriesByTopic = async ({topics, perPage = 10, page = 1}: {topics: Array<string>, perPage: number, page: number}) => {
-        const requests = topics.map((topic: any)=>axios.get(`${baseUrl}topic:${topic.name}&per_page=${perPage}&page=${page}`))
+        const axiosOptions = {headers: {
+            'Content-Type': 'application/json',
+            'Authorization': "Bearer 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"
+          }}
+        const requests = topics.map((topic: any)=>axios.get(`${baseUrl}topic:${topic.name}&per_page=${perPage}&page=${page}`, axiosOptions))
         const result = await axios.all(requests);
         return result;
     }

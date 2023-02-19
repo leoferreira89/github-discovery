@@ -4,38 +4,27 @@ import { CardsList } from '../cardsList/cardsList';
 import { TopicsList } from '../topicsList/topicsList';
 
 export function Discovery({t}:{t: any}) {
-    const [viewTopicLists, setViewTopicLists] = useState([]);
+    const [viewTopicLists, setViewTopicLists] = useState<any>([]);
     const [cardList, setCardList] = useState<any>([]);
     const repositories = useRef<any>([]);
     const {requests} = HttpRequests();
 
     useEffect(()=> {
         repositories.current = [];
-        console.log("viewTopicLists ==>", viewTopicLists);
         getNewRepos();
     },[viewTopicLists])
 
+    // Pode ser mais eficiente, em vez de pedir todos, pedir apenas um de cada vez;
     const getNewRepos = useCallback( async()=> {
         const result = await requests.getMultipleRepositoriesByTopic({topics: viewTopicLists})
-        console.log("result for resqueaa", result);
         const newList = [] as any;
         if (result.length > 0) {
-            result.forEach((element: any) => {
+            result.forEach((element: any, index: any) => {
                 const topic = element.data;
-                newList.push({name: topic.name, repos: topic?.items});
+                newList.push({name: viewTopicLists[index].name, repos: topic?.items});
             });
-            console.log("fazer set da list aqui");
             setCardList(newList);
         }
-        
-        // if (viewTopicLists.length > 0) {
-        //      await viewTopicLists.forEach(async (topic: any) => {
-        //         const {data} = await requests.getRepositoriesByTopic({topic: topic.name});
-        //         console.log("aquiiii", data);
-        //         repositories.current.push({name: topic.name, repos: data?.items});
-        //     })
-        //     console.log("repositories ==>", repositories.current);
-        // }
     }, [viewTopicLists, repositories])
 
     return (
@@ -46,6 +35,8 @@ export function Discovery({t}:{t: any}) {
             <TopicsList t={t} topicsList={[]} setViewTopicLists={setViewTopicLists} />
             <br/>
             {cardList && cardList.map((repo: any) => {
+                console.log("repo ======>", repo);
+                
                 return(
                     <>
                     <CardsList t={t} title={t(repo.name) || repo.name} cardList={repo}/>
