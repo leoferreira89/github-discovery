@@ -12,6 +12,8 @@
         "discovery": "Discovery",
         "logout": "Logout",
         "myAccount": "My Account",
-        "save": "Save"
+        "save": "Save",
+        "toggleTopicsTitle": "Toggle topics to show",
+        "bookmarks": "Bookmarks"
     }
 }

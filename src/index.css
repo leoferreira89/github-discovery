@@ -42,7 +42,7 @@ code {
 .mainPageWrapper {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  padding-left: 50px;
 }
 
 .headerWrapper {
@@ -54,6 +54,56 @@ code {
   padding: 10px;
   padding-left: 50px;
   background-color: #a6a6a6;
+}
+.cardContainerWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  overflow-x: scroll;
+  height: 350px;
+}
+.cardListTitle {
+  top: 0;
+  position: absolute;
+  font-size: 25px;
+  font-weight: 550;
+}
+.cardWrapper {
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  max-height: 200px;
+  margin: 10px;
+}
+.cardWrapper:hover {
+  z-index: 99;
+  transition: .4s;
+  transform: scale(1.25);
+}
+
+.starFav {
+  cursor: pointer;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  color: white;
+}
+
+.chipWrapper {
+  cursor: pointer !important;
+  margin-right: 7px !important;
+}
+.topicListContainerWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.topicListTitle {
+  font-size: 20px;
+  font-weight: 550;
+  margin-bottom: 15px;
 }
 
 .logo2 {
