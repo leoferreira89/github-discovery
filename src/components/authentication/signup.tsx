@@ -40,8 +40,6 @@ return (
                 />
                 <button type="submit">{t("signin") || "Sign in"}</button>
         </form>
-        {/* TODO: ADD LOCAL TRANSLATIONS */}
-        <label>{t("haveAnAccount") || "Do you have an account?"}</label>
     </div>
 )
 }

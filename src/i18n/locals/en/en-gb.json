@@ -6,6 +6,9 @@
         "enterPassword": "Enter your password",
         "signin": "Sign In",
         "signup": "Sign Up",
-        "haveAnAccount": "Do you have an account?"
+        "haveAnAccount": "Don't have an account? ",
+        "clickHere": "Click here to sign up",
+        "discovery": "Discovery",
+        "logout": "Logout"
     }
 }

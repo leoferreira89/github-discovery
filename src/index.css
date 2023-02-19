@@ -11,8 +11,65 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
+.inputTitle{
+  text-align: left;
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+.signInWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 .loginForm {
   display: flex;
   flex-direction: column;
+  width: 300px;
+}
+
+.createAccountLinkWrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+.mainPageWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: darkslategray;
+}
+
+.headerWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: 75px;
+  padding: 10px;
+  opacity: 0.6;
+  background-color: black;
+}
+
+.logo2 {
+  width: 55px;
+  height: 55px;
+}
+
+.discovery-title {
+  cursor: pointer;
+  margin-left: 30px;
+  font-size: 22px;
+  color: white;
+}
+
+.leftMenu {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.rightMenu {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
