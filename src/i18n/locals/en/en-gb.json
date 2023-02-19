@@ -2,6 +2,7 @@
     "translation": {
         "username": "Username",
         "password": "Password",
+        "email": "Email",
         "enterUsername": "Enter your username",
         "enterPassword": "Enter your password",
         "signin": "Sign In",
@@ -9,6 +10,8 @@
         "haveAnAccount": "Don't have an account? ",
         "clickHere": "Click here to sign up",
         "discovery": "Discovery",
-        "logout": "Logout"
+        "logout": "Logout",
+        "myAccount": "My Account",
+        "save": "Save"
     }
 }

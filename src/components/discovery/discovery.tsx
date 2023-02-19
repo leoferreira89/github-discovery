@@ -5,8 +5,6 @@ export function Discovery({t}:{t: any}) {
 
     return (
         <div className='mainPageWrapper'>
-            
-            <UserDetails t={t}/>
         </div>
     )
 }

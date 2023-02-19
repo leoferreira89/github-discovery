@@ -5,6 +5,7 @@ import { SignUp } from './components/authentication/signup';
 import { useTranslation } from "react-i18next";
 import { Route, Routes } from 'react-router-dom';
 import { Discovery } from './components/discovery/discovery';
+import { UserDetails } from './components/authentication/userDetails';
 import { AuthProvider } from './context/authContext';
 import ProtectedRoutes from './components/authentication/protectedRoutes';
 import { Header } from './components/header/header';
@@ -27,6 +28,11 @@ function App() {
           <Route path='/discovery' element={
             <ProtectedRoutes>
               <Discovery t={t} />
+            </ProtectedRoutes>
+          }/>
+          <Route path='/username' element={
+            <ProtectedRoutes>
+              <UserDetails t={t} />
             </ProtectedRoutes>
           }/>
         </Routes>

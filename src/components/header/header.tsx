@@ -19,7 +19,7 @@ export function Header({t}: any) {
               <a href='/discovery' className='discovery-title'>{t("discovery")}</a>
           </div>
           <div className='rightMenu'>
-              <a href='/' className='discovery-title'>{t("username")}</a>
+              <a href='/username' className='discovery-title'>{t("username")}</a>
               <a onClick={handleLogOut} className='discovery-title'>{t("logout")}</a>
           </div>
       </div>
