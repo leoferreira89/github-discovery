@@ -19,7 +19,8 @@ export function Discovery({t}:{t: any}) {
 
     const addTopic = useCallback(async(topic: string)=> {
         const result = await requests.getRepositoriesByTopic({topic});
-        const newCardList = [{name: topic, repos: result.items}] as any;
+        const items = checkBookmarks(result.items)
+        const newCardList = [{name: topic, repos: items}] as any;
         setCardList((prevState: any)=>[...prevState, ...newCardList]);
     },[cardList])
     
@@ -38,38 +39,46 @@ export function Discovery({t}:{t: any}) {
     },[cardList])
 
 
+    useEffect(() => {
+        const localStoreAux = localStorage.getItem("github-discovery-bookmarks");
+        if (localStoreAux) {
+            const localBookmarks = JSON.parse(localStoreAux) as Array<any>;
+            setBookmarks({name: 'bookmarks', repos: localBookmarks})
+        }
+    }, [])
+
     /**
      * Get in batch
      */
-    const getNewRepos = useCallback( async()=> {
-        const result = await requests.getMultipleRepositoriesByTopic({topics: viewTopicLists})
-        const newList = [] as any;
-        const newBookmarks = {name: 'bookmarks', repos: []} as any;
-        if (result.length > 0) {
-            result.forEach((element: any, index: any) => {
-                const topic = element.data;
-                const repos = checkBookmarks(topic?.items, newBookmarks)
-                newList.push({name: viewTopicLists[index].name, repos: repos});
-            });
-            setBookmarks(newBookmarks)
-            setCardList(newList);
-        }
-    }, [viewTopicLists])
+    // const getNewRepos = useCallback( async()=> {
+    //     const result = await requests.getMultipleRepositoriesByTopic({topics: viewTopicLists})
+    //     const newList = [] as any;
+    //     const newBookmarks = {name: 'bookmarks', repos: []} as any;
+    //     if (result.length > 0) {
+    //         result.forEach((element: any, index: any) => {
+    //             const topic = element.data;
+    //             const repos = checkBookmarks(topic?.items)
+    //             newList.push({name: viewTopicLists[index].name, repos: repos});
+    //         });
+    //         setBookmarks(newBookmarks)
+    //         setCardList(newList);
+    //     }
+    // }, [viewTopicLists])
 
     /** 
      * Check for localStorage bookmarks and creates list
      */
-    const checkBookmarks = useCallback((repos: Array<any>, newBookmarks: any) => {
+    const checkBookmarks = useCallback((repos: Array<any>) => {
         const localStoreAux = localStorage.getItem("github-discovery-bookmarks");
         if (localStoreAux) {
             const localBookmarks = JSON.parse(localStoreAux) as Array<any>;
             const newCardList = [...repos];
             newCardList.forEach((element: any) => {
-                    const index = localBookmarks.indexOf(element.id)
-                    if (index >= 0) {
+                localBookmarks.forEach((bookm: any) => {
+                    if (bookm.id === element.id) {
                         element.markedAsBookmark = true;
-                        newBookmarks.repos.push(element)
                     }
+                })
             });
             return newCardList;
         } else {
@@ -95,11 +104,13 @@ export function Discovery({t}:{t: any}) {
      * @param topicIndex index of the topic in the array
      * @param repoIndex index of the repository inside the array
      */
-    const handleRemoveBookmark = (topicIndex: string, repoIndex: number) => {
+    const handleRemoveBookmark = (topicIndex: string, repoIndex: number, repo: any) => {
+        removeLocalBookmarks(repo)
         const newCardList = [...cardList] as any;
-        newCardList[topicIndex].repos[repoIndex].markedAsBookmark = false;
-        setCardList(newCardList);
-        removeLocalBookmarks(newCardList[topicIndex].repos[repoIndex])
+        if (newCardList[topicIndex]) {
+            newCardList[topicIndex].repos[repoIndex].markedAsBookmark = false;
+            setCardList(newCardList);
+        }
     }
 
     /**
@@ -107,18 +118,26 @@ export function Discovery({t}:{t: any}) {
      * @param repoId id of the repository
      */
     const addLocalBookmark = (repo: any) => {
+        const localBookmarkRepo = {
+            id: repo.id,
+            name: repo.name,
+            owner: {
+                login: repo.owner.login
+            },
+            markedAsBookmark: true
+        }
         const localStoreAux = localStorage.getItem('github-discovery-bookmarks');
         let localBookmarks;
         const newBookmarkList = {...bookmarks};
         if (localStoreAux) {
             localBookmarks = JSON.parse(localStoreAux) as Array<any>;
-            localBookmarks.push(repo.id);
+            localBookmarks.push(localBookmarkRepo);
             localStorage.setItem("github-discovery-bookmarks", JSON.stringify(localBookmarks))
         } else {
-            localBookmarks = [repo.id]
+            localBookmarks = [localBookmarkRepo]
             localStorage.setItem("github-discovery-bookmarks", JSON.stringify(localBookmarks))
         }
-        newBookmarkList.repos.push(repo);
+        newBookmarkList.repos.push(localBookmarkRepo);
         setBookmarks(newBookmarkList)
     }
 
@@ -132,7 +151,12 @@ export function Discovery({t}:{t: any}) {
         const newBookmarkList = {...bookmarks};
         if (localStoreAux) {
             localBookmarks = JSON.parse(localStoreAux) as Array<any>;
-            const index = localBookmarks.indexOf(repo.id);
+            let index = -1;
+            localBookmarks.forEach((elem: any, elemIndex)=> {
+                if (elem.id === repo.id) {
+                    index = elemIndex;
+                }
+            })
             if (index >= 0) {
                 localBookmarks.splice(index, 1);
                 newBookmarkList.repos.splice(index, 1);
@@ -147,7 +171,7 @@ export function Discovery({t}:{t: any}) {
 
     return (
         <div className='mainPageWrapper'>
-            <CardsList t={t} title={t('bookmarks') || 'Bookmarks'} cardList={bookmarks} />
+            <CardsList t={t} title={t('bookmarks') || 'Bookmarks'} cardList={bookmarks} handleRemoveBookmark={handleRemoveBookmark}  />
             <br/>
             <br/>
             <TopicsList t={t} topicsList={[]} setViewTopicLists={setViewTopicLists} addTopic={addTopic} removeTopic={removeTopic} />
