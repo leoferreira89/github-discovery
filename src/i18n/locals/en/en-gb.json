@@ -14,6 +14,10 @@
         "myAccount": "My Account",
         "save": "Save",
         "toggleTopicsTitle": "Toggle topics to show",
-        "bookmarks": "Bookmarks"
+        "bookmarks": "Bookmarks",
+        "sortByStars": "Sort by stars",
+        "sortByForks": "Sort by forks",
+        "sortByHelpWanted": "Sort by help wanted issues",
+        "sortByUpdated": "Sort by updated"
     }
 }

@@ -9,12 +9,12 @@ const baseUrl = 'https://api.github.com/search/repositories?q=';
 
 export const HTTPProvider = ({children}: any) => {
 
-    const getRepositoriesByTopic = async ({topic, perPage = 10, page = 1}: {topic: string, perPage: number, page: number}) => {
+    const getRepositoriesByTopic = async ({topic, perPage = 10, page = 1, sort=''}: {topic: string, perPage: number, page: number, sort: string}) => {
         const axiosOptions = {headers: {
             'Content-Type': 'application/json',
             'Authorization': "Bearer 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"
           }}
-        const response = await axios.get(`${baseUrl}topic:${topic}&per_page=${perPage}&page=${page}`, axiosOptions)
+        const response = await axios.get(`${baseUrl}topic:${topic}&per_page=${perPage}&page=${page}&sort=${sort}`, axiosOptions)
         return response.data;
     }
     

@@ -4,14 +4,14 @@ import { CardsList } from '../cardsList/cardsList';
 import { TopicsList } from '../topicsList/topicsList';
 
 export function Discovery({t}:{t: any}) {
-    const [viewTopicLists, setViewTopicLists] = useState<any>([]);
+    const [viewTopicLists, setViewTopicLists] = useState<Array<any>>([{name: 'Javascript', selected: true},{name: 'Typescript', selected: false},{name: 'Vue', selected: false},{name: 'React', selected: false},{name: 'Angular', selected: false},{name: 'CSS', selected: false},{name: 'Node', selected: false}]);
     const [cardList, setCardList] = useState<any>([]);
     const [bookmarks, setBookmarks] = useState<any>({name: 'bookmarks', repos: []});
     const {requests} = HttpRequests();
 
     useEffect(()=> {
         if (viewTopicLists.length>0) {
-            // getNewRepos();
+            getNewRepos();
         } else {
             setCardList([])
         }
@@ -39,6 +39,9 @@ export function Discovery({t}:{t: any}) {
     },[cardList])
 
 
+    /**
+     * Check if there are bookmarks in localstorage. If so, set them to list to be shown
+     */
     useEffect(() => {
         const localStoreAux = localStorage.getItem("github-discovery-bookmarks");
         if (localStoreAux) {
@@ -47,23 +50,39 @@ export function Discovery({t}:{t: any}) {
         }
     }, [])
 
+    const requestTopicSorted = useCallback(async(topic: string, sort: string) => {
+        const result = await requests.getRepositoriesByTopic({topic, sort});
+        const items = checkBookmarks(result.items)
+        setCardList((prevState: any)=> {
+            prevState.forEach((element: any) => {
+                if (element.name === topic) {
+                    element.repos = items
+                }
+            });
+            return[...prevState]
+        })
+    },[cardList])
+
     /**
      * Get in batch
      */
-    // const getNewRepos = useCallback( async()=> {
-    //     const result = await requests.getMultipleRepositoriesByTopic({topics: viewTopicLists})
-    //     const newList = [] as any;
-    //     const newBookmarks = {name: 'bookmarks', repos: []} as any;
-    //     if (result.length > 0) {
-    //         result.forEach((element: any, index: any) => {
-    //             const topic = element.data;
-    //             const repos = checkBookmarks(topic?.items)
-    //             newList.push({name: viewTopicLists[index].name, repos: repos});
-    //         });
-    //         setBookmarks(newBookmarks)
-    //         setCardList(newList);
-    //     }
-    // }, [viewTopicLists])
+    const getNewRepos = useCallback( async()=> {
+        const requestList = viewTopicLists.filter((elem: any) => {
+            if (elem.selected){
+                return elem
+            }
+        })
+        const result = await requests.getMultipleRepositoriesByTopic({topics: requestList})
+        const newList = [] as any;
+        if (result.length > 0) {
+            result.forEach((element: any, index: any) => {
+                const topic = element.data;
+                const repos = checkBookmarks(topic?.items)
+                newList.push({name: viewTopicLists[index].name, repos: repos});
+            });
+            setCardList(newList);
+        }
+    }, [viewTopicLists])
 
     /** 
      * Check for localStorage bookmarks and creates list
@@ -171,16 +190,24 @@ export function Discovery({t}:{t: any}) {
 
     return (
         <div className='mainPageWrapper'>
-            <CardsList t={t} title={t('bookmarks') || 'Bookmarks'} cardList={bookmarks} handleRemoveBookmark={handleRemoveBookmark}  />
+            <CardsList t={t} hasSort={false} title={t('bookmarks') || 'Bookmarks'} cardList={bookmarks} handleRemoveBookmark={handleRemoveBookmark}  />
             <br/>
             <br/>
-            <TopicsList t={t} topicsList={[]} setViewTopicLists={setViewTopicLists} addTopic={addTopic} removeTopic={removeTopic} />
+            <TopicsList t={t} topicsList={viewTopicLists} setViewTopicLists={setViewTopicLists} addTopic={addTopic} removeTopic={removeTopic} />
             <br/>
             {cardList && cardList.map((repo: any, index: number) => {
 
                 return(
                     <>
-                    <CardsList t={t} topicIndex={index} title={t(repo.name) || repo.name} cardList={repo} handleCreateBookmark={handleCreateBookmark} handleRemoveBookmark={handleRemoveBookmark} />
+                    <CardsList
+                        t={t}
+                        topicIndex={index}
+                        title={repo.name}
+                        cardList={repo}
+                        handleCreateBookmark={handleCreateBookmark}
+                        handleRemoveBookmark={handleRemoveBookmark} 
+                        requestTopicSorted={requestTopicSorted}
+                        />
                     </>
                 )
             })}

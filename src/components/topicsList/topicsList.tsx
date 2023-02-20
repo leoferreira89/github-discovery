@@ -6,7 +6,7 @@ export function TopicsList({t, topicsList, setViewTopicLists, addTopic, removeTo
 
     useEffect(()=> {
         //TODO: replace with a list of real TOPICS from github {topicsList}
-        setList([{name: 'Javascript', selected: false},{name: 'Typescript', selected: false},{name: 'Vue', selected: false},{name: 'React', selected: false},{name: 'Angular', selected: false},{name: 'CSS', selected: false},{name: 'Node', selected: false}])
+        setList(topicsList)
     }, [])
 
     const handleClick = useCallback((topic: any) => {
@@ -23,7 +23,7 @@ export function TopicsList({t, topicsList, setViewTopicLists, addTopic, removeTo
             }
             return element
         });
-        // setViewTopicLists(newViewTopicList)
+        setViewTopicLists(newViewTopicList)
         setList(auxList)
     }, [list])
     
