@@ -14,8 +14,8 @@ export const HTTPProvider = ({children}: any) => {
             'Content-Type': 'application/json',
             'Authorization': "Bearer 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"
           }}
-        return await axios.get(`${baseUrl}topic:${topic}&per_page=${perPage}&page=${page}`, axiosOptions)
-
+        const response = await axios.get(`${baseUrl}topic:${topic}&per_page=${perPage}&page=${page}`, axiosOptions)
+        return response.data;
     }
     
     const getMultipleRepositoriesByTopic = async ({topics, perPage = 10, page = 1}: {topics: Array<string>, perPage: number, page: number}) => {

@@ -1,11 +1,11 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import { Chip } from '@mui/material';
 
-export function TopicsList({t, topicsList, setViewTopicLists}: {t: any, topicsList: Array<any>, setViewTopicLists: Function}) {
+export function TopicsList({t, topicsList, setViewTopicLists, addTopic, removeTopic}: {t: any, topicsList: Array<any>, setViewTopicLists: Function, addTopic: Function, removeTopic: Function}) {
     const [list, setList] = useState<any>([]);
 
     useEffect(()=> {
-        //TODO: replace with a list of real TOPICS {topicsList}
+        //TODO: replace with a list of real TOPICS from github {topicsList}
         setList([{name: 'Javascript', selected: false},{name: 'Typescript', selected: false},{name: 'Vue', selected: false},{name: 'React', selected: false},{name: 'Angular', selected: false},{name: 'CSS', selected: false},{name: 'Node', selected: false}])
     }, [])
 
@@ -14,11 +14,16 @@ export function TopicsList({t, topicsList, setViewTopicLists}: {t: any, topicsLi
         const auxList = list.map((element: any) => {
             if (element.name === topic.name) {
                 element.selected = !element.selected;
+                if (element.selected) {
+                    addTopic(topic.name)
+                    newViewTopicList.push(element);
+                } else {
+                    removeTopic(topic.name);
+                }
             }
-            if (element.selected) {newViewTopicList.push(element);}
             return element
         });
-        setViewTopicLists(newViewTopicList)
+        // setViewTopicLists(newViewTopicList)
         setList(auxList)
     }, [list])
     
