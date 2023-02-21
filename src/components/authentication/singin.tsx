@@ -30,7 +30,7 @@ export function SignIn({t}:{t: any}) {
 
     return (
         <div className="signInWrapper">
-            <h1>{t("signin") || "Sign In"} -</h1>
+            <h1>{t("signin") || "Sign In"}</h1>
             <form 
             onSubmit={signIn}
             className="loginForm">
