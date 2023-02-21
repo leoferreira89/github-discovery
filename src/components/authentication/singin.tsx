@@ -1,4 +1,4 @@
-import { signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import React, {useState} from "react";
 import { auth } from '../../firebase';
 import { useNavigate } from 'react-router-dom';
@@ -30,7 +30,7 @@ export function SignIn({t}:{t: any}) {
 
     return (
         <div className="signInWrapper">
-            <h1>{t("signin") || "Sign In"}</h1>
+            <h1>{t("signin") || "Sign In"} -</h1>
             <form 
             onSubmit={signIn}
             className="loginForm">
@@ -41,7 +41,7 @@ export function SignIn({t}:{t: any}) {
                     id="outlined-basic"
                     type='email'
                     size="small"
-                    label={t("username") || "Enter your email"}
+                    label={t("email") || "Enter your email"}
                     variant="outlined"
                     value={email}
                     onChange={(event)=>{setEmail(event.target.value)}}
