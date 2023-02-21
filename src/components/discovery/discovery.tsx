@@ -1,7 +1,14 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { HttpRequests } from '../../services/http/requests';
 import { CardsList } from '../cardsList/cardsList';
 import { TopicsList } from '../topicsList/topicsList';
+
+const LOCALSTORAGE_FILTERS = 'github-discovery-topics'
+const LOCALSTORAGE_BOOKMARKS = 'github-discovery-bookmarks'
+ 
+    // FALTA CORRIGIR REMOVER FAVORITO DIRECTO DO BOOKMARK CHECK
+    // FALTA FAZER SET LOCALSTORAGE DOS FITERS CHECK
+    // FALTA FAZER PEDIDO USANDO O "activeSort"? CHECK
 
 export function Discovery({t}:{t: any}) {
     const [viewTopicLists, setViewTopicLists] = useState<Array<any>>([
@@ -19,29 +26,27 @@ export function Discovery({t}:{t: any}) {
 
     useEffect(()=> {
         if (viewTopicLists.length>0) {
-            getNewRepos();
-            // checkLocalActiveFilters();
+            checkLocalActiveFilters();
         } else {
             setCardList([])
         }
     },[])
 
-    // FALTA CORRIGIR REMOVER FAVORITO DIRECTO DO BOOKMARK
-    // FALTA FAZER SET LOCALSTORAGE DOS SORTS
-    // FALTA FAZER PEDIDO USANDO O "activeSort"?
 
     const handleSetViewTopicLists = useCallback((viewTopics: any) => {
         setViewTopicLists(viewTopics)
-        localStorage.setItem("github-discovery-topics", viewTopics);
+        localStorage.setItem(LOCALSTORAGE_FILTERS, JSON.stringify(viewTopics));
     },[viewTopicLists])
 
     const checkLocalActiveFilters = useCallback(() => {
-        const auxLocalFilters = localStorage.getItem("github-discovery-topics");
+        const auxLocalFilters = localStorage.getItem(LOCALSTORAGE_FILTERS);
         if (auxLocalFilters) {
             const localActiveFilters = JSON.parse(auxLocalFilters);
             setViewTopicLists(localActiveFilters);
+            getNewRepos(localActiveFilters);
         } else {
-            localStorage.setItem("github-discovery-topics", JSON.stringify(viewTopicLists))
+            localStorage.setItem(LOCALSTORAGE_FILTERS, JSON.stringify(viewTopicLists))
+            getNewRepos(viewTopicLists);
         }
     }, [viewTopicLists])
 
@@ -71,7 +76,7 @@ export function Discovery({t}:{t: any}) {
      * Check if there are bookmarks in localstorage. If so, set them to list to be shown
      */
     useEffect(() => {
-        const localStoreAux = localStorage.getItem("github-discovery-bookmarks");
+        const localStoreAux = localStorage.getItem(LOCALSTORAGE_BOOKMARKS);
         if (localStoreAux) {
             const localBookmarks = JSON.parse(localStoreAux) as Array<any>;
             setBookmarks({name: 'bookmarks', repos: localBookmarks})
@@ -79,6 +84,17 @@ export function Discovery({t}:{t: any}) {
     }, [])
 
     const requestTopicSorted = useCallback(async(topic: string, sort: string) => {
+        setViewTopicLists((prevState)=> {
+            const auxList = prevState.map((element: any) => {
+                if (element.name === topic) {
+                    element.activeSort = sort;
+                }
+                return element
+            });
+            localStorage.setItem(LOCALSTORAGE_FILTERS, JSON.stringify(auxList))
+            return auxList;
+        });
+
         const result = await requests.getRepositoriesByTopic({topic, sort});
         const items = checkBookmarks(result.items)
         setCardList((prevState: any)=> {
@@ -94,19 +110,20 @@ export function Discovery({t}:{t: any}) {
     /**
      * Get in batch
      */
-    const getNewRepos = useCallback( async()=> {
-        const requestList = viewTopicLists.filter((elem: any) => {
+    const getNewRepos = useCallback( async(filterList: any)=> {
+        const requestList = filterList.filter((elem: any) => {
             if (elem.selected){
                 return elem
             }
         })
+        
         const result = await requests.getMultipleRepositoriesByTopic({topics: requestList})
         const newList = [] as any;
-        if (result.length > 0) {
+        if (result && result.length > 0) {
             result.forEach((element: any, index: any) => {
                 const topic = element.data;
                 const repos = checkBookmarks(topic?.items)
-                newList.push({name: viewTopicLists[index].name, repos: repos});
+                newList.push({name: requestList[index].name, repos: repos});
             });
             setCardList(newList);
         }
@@ -116,7 +133,7 @@ export function Discovery({t}:{t: any}) {
      * Check for localStorage bookmarks and creates list
      */
     const checkBookmarks = useCallback((repos: Array<any>) => {
-        const localStoreAux = localStorage.getItem("github-discovery-bookmarks");
+        const localStoreAux = localStorage.getItem(LOCALSTORAGE_BOOKMARKS);
         if (localStoreAux) {
             const localBookmarks = JSON.parse(localStoreAux) as Array<any>;
             const newCardList = [...repos];
@@ -139,11 +156,11 @@ export function Discovery({t}:{t: any}) {
      * @param topicIndex index of the topic in the array
      * @param repoIndex index of the repository inside the array
      */
-    const handleCreateBookmark = (topicIndex: string, repoIndex: number) => {
+    const handleCreateBookmark = (title: string, topicIndex: string, repoIndex: number) => {
         const newCardList = [...cardList] as any;
         newCardList[topicIndex].repos[repoIndex].markedAsBookmark = true;
         setCardList(newCardList);
-        addLocalBookmark(newCardList[topicIndex].repos[repoIndex])
+        addLocalBookmark(title, newCardList[topicIndex].repos[repoIndex])
     }
 
     /**
@@ -151,12 +168,30 @@ export function Discovery({t}:{t: any}) {
      * @param topicIndex index of the topic in the array
      * @param repoIndex index of the repository inside the array
      */
-    const handleRemoveBookmark = (topicIndex: string, repoIndex: number, repo: any) => {
+    const handleRemoveBookmark = (topic: string, topicIndex: string, repoIndex: number, repo: any) => {
         removeLocalBookmarks(repo)
         const newCardList = [...cardList] as any;
+        
         if (newCardList[topicIndex]) {
             newCardList[topicIndex].repos[repoIndex].markedAsBookmark = false;
             setCardList(newCardList);
+        }
+
+        // If removing start from bookmark, then tries to remove it also
+        // from the original list
+        if (repo.topicName) {
+            setCardList((prevState: any)=> {
+                prevState.map((topic: any) => {
+                    if (topic.name === repo.topicName) {
+                        topic.repos.forEach((element: any) => {
+                            if (element.id === repo.id) {
+                                element.markedAsBookmark = false;
+                            }
+                        });
+                    }
+                });
+                return prevState;
+            })
         }
     }
 
@@ -164,9 +199,10 @@ export function Discovery({t}:{t: any}) {
      * Adds a repoId in the localStorage
      * @param repoId id of the repository
      */
-    const addLocalBookmark = (repo: any) => {
+    const addLocalBookmark = (title: string, repo: any) => {
         const localBookmarkRepo = {
             id: repo.id,
+            topicName: title,
             name: repo.name,
             owner: {
                 login: repo.owner.login
@@ -174,16 +210,16 @@ export function Discovery({t}:{t: any}) {
             markedAsBookmark: true,
             html_url: repo.html_url
         }
-        const localStoreAux = localStorage.getItem('github-discovery-bookmarks');
+        const localStoreAux = localStorage.getItem(LOCALSTORAGE_BOOKMARKS);
         let localBookmarks;
         const newBookmarkList = {...bookmarks};
         if (localStoreAux) {
             localBookmarks = JSON.parse(localStoreAux) as Array<any>;
             localBookmarks.push(localBookmarkRepo);
-            localStorage.setItem("github-discovery-bookmarks", JSON.stringify(localBookmarks))
+            localStorage.setItem(LOCALSTORAGE_BOOKMARKS, JSON.stringify(localBookmarks))
         } else {
             localBookmarks = [localBookmarkRepo]
-            localStorage.setItem("github-discovery-bookmarks", JSON.stringify(localBookmarks))
+            localStorage.setItem(LOCALSTORAGE_BOOKMARKS, JSON.stringify(localBookmarks))
         }
         newBookmarkList.repos.push(localBookmarkRepo);
         setBookmarks(newBookmarkList)
@@ -194,7 +230,7 @@ export function Discovery({t}:{t: any}) {
      * @param repoId id of the repository
      */
     const removeLocalBookmarks = (repo: any) => {
-        const localStoreAux = localStorage.getItem('github-discovery-bookmarks');
+        const localStoreAux = localStorage.getItem(LOCALSTORAGE_BOOKMARKS);
         let localBookmarks;
         const newBookmarkList = {...bookmarks};
         if (localStoreAux) {
@@ -208,7 +244,7 @@ export function Discovery({t}:{t: any}) {
             if (index >= 0) {
                 localBookmarks.splice(index, 1);
                 newBookmarkList.repos.splice(index, 1);
-                localStorage.setItem("github-discovery-bookmarks", JSON.stringify(localBookmarks))
+                localStorage.setItem(LOCALSTORAGE_BOOKMARKS, JSON.stringify(localBookmarks))
                 setBookmarks(newBookmarkList)
             }
         } else {
@@ -222,7 +258,7 @@ export function Discovery({t}:{t: any}) {
             <CardsList t={t} hasSort={false} title={t('bookmarks') || 'Bookmarks'} cardList={bookmarks} handleRemoveBookmark={handleRemoveBookmark}  />
             <br/>
             <br/>
-            <TopicsList t={t} topicsList={viewTopicLists} setViewTopicLists={handleSetViewTopicLists} addTopic={addTopic} removeTopic={removeTopic} />
+            <TopicsList t={t} topicsList={viewTopicLists} handleSetViewTopicLists={handleSetViewTopicLists} addTopic={addTopic} removeTopic={removeTopic} />
             <br/>
             {cardList && cardList.map((repo: any, index: number) => {
 

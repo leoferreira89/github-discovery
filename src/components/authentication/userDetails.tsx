@@ -1,7 +1,7 @@
 
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import { Button, TextField } from '@mui/material';
-import { updateProfile, updateEmail } from "firebase/auth"
+import { Alert, Button, TextField } from '@mui/material';
+import { updateProfile, updateEmail} from "firebase/auth"
 import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -10,9 +10,17 @@ import { UserAuth } from '../../context/authContext';
 export function UserDetails({t}:{t: any}) {
     const [email, setEmail] = useState<any>("");
     const [username, setUsername] = useState<any>("");
+    const [messageType, setMessageType] = useState<any>("warning");
     const message = useRef("Generic error on form");
-    const {currentUser: user} = UserAuth();
+    const {currentUser} = UserAuth();
+    const [user, setUser] = useState<any>();
     
+    useEffect(()=> {
+        console.log("user", currentUser);
+        
+        setUser(currentUser);
+    },[currentUser])
+
     const [open, setOpen] = React.useState(false);
 
     const openSnackBar = () => {
@@ -48,19 +56,19 @@ export function UserDetails({t}:{t: any}) {
             setUsername(user.displayName)
             setEmail(user.email)
         }
-    },[])
+    },[user])
 
     const validateFormData = useCallback(() => {
         let flag = false;
         if (username === '') {
             flag = true;
-            message.current = 'Username is mandatory, and must be diferent from the current username'
+            message.current = t("warningMessage1")
         }
         const regexEmail =
         /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         if (!regexEmail.test(email)) {
             flag = true;
-            message.current = 'Email address is not valid!'
+            message.current = t("warningMessage2")
         }
         if (flag) {
             openSnackBar();
@@ -74,7 +82,9 @@ export function UserDetails({t}:{t: any}) {
         if (validateFormData()) {
             
             updateProfile(user!, {displayName: username}).then((resp) => {
-                console.log("resp ==>", resp);
+                message.current = t("sucessMessage1")
+                setMessageType("success");
+                openSnackBar();
             })
             if (email !== user?.email) {
                 updateEmail(user!, email);
@@ -117,13 +127,11 @@ export function UserDetails({t}:{t: any}) {
                 <br/>
                 <Button style={{width: 100}} type="submit" variant="contained" color="secondary">{t("save") || "Sign in"}</Button>
             </form>
-            <Snackbar
-                open={open}
-                autoHideDuration={6000}
-                onClose={handleClose}
-                message={message.current}
-                action={action}
-            />
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity={messageType} sx={{ width: '100%' }}>
+                    {message.current}
+                </Alert>
+            </Snackbar>
         </div>
     )
 }

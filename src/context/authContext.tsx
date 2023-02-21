@@ -29,7 +29,7 @@ export const AuthProvider = ({children}: any) => {
 
     const userSignOut = () => {
         signOut(auth).then(()=>{
-            console.log("User signed out!");
+            localStorage.clear();
             navigate('/');
         }).catch((error)=> {
             console.log("Error loggin out user!", error);

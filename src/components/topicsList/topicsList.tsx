@@ -1,29 +1,27 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import { Chip } from '@mui/material';
 
-export function TopicsList({t, topicsList, setViewTopicLists, addTopic, removeTopic}: {t: any, topicsList: Array<any>, setViewTopicLists: Function, addTopic: Function, removeTopic: Function}) {
+export function TopicsList({t, topicsList, handleSetViewTopicLists, addTopic, removeTopic}: {t: any, topicsList: Array<any>, handleSetViewTopicLists: Function, addTopic: Function, removeTopic: Function}) {
     const [list, setList] = useState<any>([]);
 
     useEffect(()=> {
-        //TODO: replace with a list of real TOPICS from github {topicsList}
+        //TODO: replace with a list of a TOPICS request from github
         setList(topicsList)
-    }, [])
+    }, [topicsList])
 
     const handleClick = useCallback((topic: any) => {
-        const newViewTopicList = [] as any;
         const auxList = list.map((element: any) => {
             if (element.name === topic.name) {
                 element.selected = !element.selected;
                 if (element.selected) {
                     addTopic(topic.name)
-                    newViewTopicList.push(element);
                 } else {
                     removeTopic(topic.name);
                 }
             }
             return element
         });
-        setViewTopicLists(newViewTopicList)
+        handleSetViewTopicLists(auxList)
         setList(auxList)
     }, [list])
     

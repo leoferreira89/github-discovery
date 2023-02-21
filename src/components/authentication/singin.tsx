@@ -75,7 +75,7 @@ export function SignIn({t}:{t: any}) {
             </form>
             <br/>
             <div className="createAccountLinkWrapper">
-                <a>{t("haveAnAccount") || "Don't have an account? "} </a>
+                <a style={{marginRight:8}}>{t("haveAnAccount") || "Don't have an account? "} </a>
                 <a href="/signup">{t("clickHere") || "Click here to sign up"}</a>
             </div>
         </div>

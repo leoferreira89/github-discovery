@@ -18,6 +18,9 @@
         "sortByStars": "Sort by stars",
         "sortByForks": "Sort by forks",
         "sortByHelpWanted": "Sort by help wanted issues",
-        "sortByUpdated": "Sort by updated"
+        "sortByUpdated": "Sort by updated",
+        "warningMessage1": "Username is mandatory, and must be diferent from the current username",
+        "warningMessage2": "Email address is not valid!",
+        "sucessMessage1": "User data updated successfully"
     }
 }

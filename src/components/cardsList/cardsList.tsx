@@ -59,10 +59,10 @@ export function CardsList({t, topicIndex, cardList, title, handleCreateBookmark,
                 return (
                 <Card key={index} className='cardWrapper'  sx={{ minWidth: 345, width: 345 }}>
                     {!repo.markedAsBookmark && 
-                        <StarBorderOutlinedIcon onClick={()=>{handleCreateBookmark(topicIndex, index)}} className='starFav' />
+                        <StarBorderOutlinedIcon onClick={()=>{handleCreateBookmark(title, topicIndex, index)}} className='starFav' />
                     }
                     {repo.markedAsBookmark && 
-                        <StarOutlinedIcon onClick={()=>handleRemoveBookmark(topicIndex, index, repo)} className='starFav' />
+                        <StarOutlinedIcon onClick={()=>handleRemoveBookmark(title, topicIndex, index, repo)} className='starFav' />
                     }
                 <CardMedia
                     onClick={(e)=>handleClick(repo.html_url)}
