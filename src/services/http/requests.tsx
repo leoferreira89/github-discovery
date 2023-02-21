@@ -8,7 +8,7 @@ export const HTTPContext = createContext<any>(defaultValue);
 const baseUrl = 'https://api.github.com/search/repositories?q=';
 
 export const HTTPProvider = ({children}: any) => {
-    const token = process.env.GIT_TOKEN || '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';
+    const token = process.env.GIT_TOKEN || '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';
 
     const getRepositoriesByTopic = async ({topic, perPage = 10, page = 1, sort=''}: {topic: string, perPage: number, page: number, sort: string}) => {
         const axiosOptions = {headers: {
