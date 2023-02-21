@@ -5,10 +5,6 @@ import { TopicsList } from '../topicsList/topicsList';
 
 const LOCALSTORAGE_FILTERS = 'github-discovery-topics'
 const LOCALSTORAGE_BOOKMARKS = 'github-discovery-bookmarks'
- 
-    // FALTA CORRIGIR REMOVER FAVORITO DIRECTO DO BOOKMARK CHECK
-    // FALTA FAZER SET LOCALSTORAGE DOS FITERS CHECK
-    // FALTA FAZER PEDIDO USANDO O "activeSort"? CHECK
 
 export function Discovery({t}:{t: any}) {
     const [viewTopicLists, setViewTopicLists] = useState<Array<any>>([
