@@ -143,7 +143,8 @@ export function Discovery({t}:{t: any}) {
             owner: {
                 login: repo.owner.login
             },
-            markedAsBookmark: true
+            markedAsBookmark: true,
+            html_url: repo.html_url
         }
         const localStoreAux = localStorage.getItem('github-discovery-bookmarks');
         let localBookmarks;
