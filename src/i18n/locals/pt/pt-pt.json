@@ -2,7 +2,25 @@
     "translation": {
         "username": "Utilizador",
         "password": "Password",
+        "email": "Email",
         "enterUsername": "Insira o seu utilizador",
-        "enterPassword": "Insira a sua password"
+        "enterPassword": "Insira a sua password",
+        "signin": "Fazer Login",
+        "signup": "Fazer Logout",
+        "haveAnAccount": "Não tem uma conta?",
+        "clickHere": "Carregue aqui para criar",
+        "discovery": "Discovery",
+        "logout": "Logout",
+        "myAccount": "A minha conta",
+        "save": "Guardar",
+        "toggleTopicsTitle": "Topicos a mostrar",
+        "bookmarks": "Favoritos",
+        "sortByStars": "Ordenar por estrelas",
+        "sortByForks": "Ordenar por forks",
+        "sortByHelpWanted": "Ordenar por help wanted issues",
+        "sortByUpdated": "Ordenar por actualizações",
+        "warningMessage1": "O nome de utilizador é obrigatório e deve ser diferente do nome atual",
+        "warningMessage2": "O endereço de email não é válido!",
+        "sucessMessage1": "Dados do utilizador atualizados com sucesso"
     }
 }
