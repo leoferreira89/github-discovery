@@ -43,7 +43,6 @@ export function UserDetails({t}:{t: any}) {
       );
 
     useEffect(()=>{
-        
         if (user) {
             setUsername(user.displayName)
             setEmail(user.email)
@@ -73,14 +72,9 @@ export function UserDetails({t}:{t: any}) {
         e.preventDefault();
         if (validateFormData()) {
             
-            if (username !== '' && username !== user?.displayName) {
-                updateProfile(user!, {displayName: 'Leo'}).then((resp) => {
-                    console.log("resp ==>", resp);
-                })
-            } else {
-                message.current = 'Username is mandatory, and must be diferent than the current username'
-                openSnackBar()
-            }
+            updateProfile(user!, {displayName: username}).then((resp) => {
+                console.log("resp ==>", resp);
+            })
             if (email !== user?.email) {
                 updateEmail(user!, email);
             }

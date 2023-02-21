@@ -15,7 +15,7 @@ export function Discovery({t}:{t: any}) {
         } else {
             setCardList([])
         }
-    },[viewTopicLists])
+    },[])
 
     const addTopic = useCallback(async(topic: string)=> {
         const result = await requests.getRepositoriesByTopic({topic});
