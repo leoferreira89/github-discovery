@@ -47,6 +47,7 @@ code {
 
 .headerWrapper {
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
@@ -133,7 +134,7 @@ code {
 
 .chipWrapper {
   cursor: pointer !important;
-  margin-right: 7px !important;
+  margin: 5px !important;
 }
 .topicListContainerWrapper {
   position: relative;

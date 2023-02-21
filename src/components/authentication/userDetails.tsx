@@ -1,17 +1,18 @@
 
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import { Button, TextField } from '@mui/material';
-import { updateProfile, updateEmail, getAuth } from "firebase/auth"
+import { updateProfile, updateEmail } from "firebase/auth"
 import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import { UserAuth } from '../../context/authContext';
 
 export function UserDetails({t}:{t: any}) {
     const [email, setEmail] = useState<any>("");
     const [username, setUsername] = useState<any>("");
     const message = useRef("Generic error on form");
-    const auth = getAuth();
-    const user = auth.currentUser;
+    const {currentUser: user} = UserAuth();
+    
     const [open, setOpen] = React.useState(false);
 
     const openSnackBar = () => {

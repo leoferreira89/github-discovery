@@ -15,8 +15,13 @@ export const HTTPProvider = ({children}: any) => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           }}
-        const response = await axios.get(`${baseUrl}topic:${topic}&per_page=${perPage}&page=${page}&sort=${sort}`) // , axiosOptions
-        return response.data;
+          try {
+              const response = await axios.get(`${baseUrl}topic:${topic}&per_page=${perPage}&page=${page}&sort=${sort}`) // , axiosOptions
+              return response.data;
+            } catch (error) {
+              console.error(error);
+              // TODO: handle error
+            }
     }
     
     const getMultipleRepositoriesByTopic = async ({topics, perPage = 10, page = 1}: {topics: Array<string>, perPage: number, page: number}) => {
@@ -24,9 +29,13 @@ export const HTTPProvider = ({children}: any) => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           }}
-        const requests = topics.map((topic: any)=>axios.get(`${baseUrl}topic:${topic.name}&per_page=${perPage}&page=${page}`))
-        const result = await axios.all(requests);
-        return result;
+        try {
+            const requests = topics.map((topic: any)=>axios.get(`${baseUrl}topic:${topic.name}&per_page=${perPage}&page=${page}`))
+            const result = await axios.all(requests);
+            return result;
+        } catch (error) {
+            console.error(error);
+        }
     }
     
     const requests = {

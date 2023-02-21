@@ -4,7 +4,7 @@ import { UserAuth } from '../../context/authContext';
 
 export function Header({t}: any) {
     const {currentUser, userSignOut} = UserAuth();
-
+    
     const handleLogOut = () => {
         console.log("WAs CLICKED!");
         userSignOut()
@@ -19,7 +19,7 @@ export function Header({t}: any) {
               <a href='/discovery' className='discovery-title'>{t("discovery")}</a>
           </div>
           <div className='rightMenu'>
-              <a href='/username' className='discovery-title'>{t("username")}</a>
+              <a href='/username' className='discovery-title'>{currentUser?.displayName || currentUser?.email || t("username")}</a>
               <a onClick={handleLogOut} className='discovery-title'>{t("logout")}</a>
           </div>
       </div>

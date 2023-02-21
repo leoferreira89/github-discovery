@@ -4,7 +4,15 @@ import { CardsList } from '../cardsList/cardsList';
 import { TopicsList } from '../topicsList/topicsList';
 
 export function Discovery({t}:{t: any}) {
-    const [viewTopicLists, setViewTopicLists] = useState<Array<any>>([{name: 'Javascript', selected: true},{name: 'Typescript', selected: false},{name: 'Vue', selected: false},{name: 'React', selected: false},{name: 'Angular', selected: false},{name: 'CSS', selected: false},{name: 'Node', selected: false}]);
+    const [viewTopicLists, setViewTopicLists] = useState<Array<any>>([
+        {name: 'Javascript', selected: true, activeSort: 'stars'},
+        {name: 'Typescript', selected: true, activeSort: 'stars'},
+        {name: 'Vue', selected: false, activeSort: 'stars'},
+        {name: 'React', selected: false, activeSort: 'stars'},
+        {name: 'Angular', selected: false, activeSort: 'stars'},
+        {name: 'CSS', selected: false, activeSort: 'stars'},
+        {name: 'Node', selected: false, activeSort: 'stars'}
+    ]);
     const [cardList, setCardList] = useState<any>([]);
     const [bookmarks, setBookmarks] = useState<any>({name: 'bookmarks', repos: []});
     const {requests} = HttpRequests();
@@ -12,10 +20,30 @@ export function Discovery({t}:{t: any}) {
     useEffect(()=> {
         if (viewTopicLists.length>0) {
             getNewRepos();
+            // checkLocalActiveFilters();
         } else {
             setCardList([])
         }
     },[])
+
+    // FALTA CORRIGIR REMOVER FAVORITO DIRECTO DO BOOKMARK
+    // FALTA FAZER SET LOCALSTORAGE DOS SORTS
+    // FALTA FAZER PEDIDO USANDO O "activeSort"?
+
+    const handleSetViewTopicLists = useCallback((viewTopics: any) => {
+        setViewTopicLists(viewTopics)
+        localStorage.setItem("github-discovery-topics", viewTopics);
+    },[viewTopicLists])
+
+    const checkLocalActiveFilters = useCallback(() => {
+        const auxLocalFilters = localStorage.getItem("github-discovery-topics");
+        if (auxLocalFilters) {
+            const localActiveFilters = JSON.parse(auxLocalFilters);
+            setViewTopicLists(localActiveFilters);
+        } else {
+            localStorage.setItem("github-discovery-topics", JSON.stringify(viewTopicLists))
+        }
+    }, [viewTopicLists])
 
     const addTopic = useCallback(async(topic: string)=> {
         const result = await requests.getRepositoriesByTopic({topic});
@@ -194,7 +222,7 @@ export function Discovery({t}:{t: any}) {
             <CardsList t={t} hasSort={false} title={t('bookmarks') || 'Bookmarks'} cardList={bookmarks} handleRemoveBookmark={handleRemoveBookmark}  />
             <br/>
             <br/>
-            <TopicsList t={t} topicsList={viewTopicLists} setViewTopicLists={setViewTopicLists} addTopic={addTopic} removeTopic={removeTopic} />
+            <TopicsList t={t} topicsList={viewTopicLists} setViewTopicLists={handleSetViewTopicLists} addTopic={addTopic} removeTopic={removeTopic} />
             <br/>
             {cardList && cardList.map((repo: any, index: number) => {
 

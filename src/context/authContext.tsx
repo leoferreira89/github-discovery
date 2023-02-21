@@ -3,14 +3,9 @@ import { onAuthStateChanged,signOut } from 'firebase/auth';
 import { auth } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 
-interface IContextProps {
-    currentUser: {
-        email: string;
-    },
-    userSignOut: Function
-  }
+let  defaultValue: any;
 
-export const AuthContext = createContext<IContextProps>({currentUser: {email: ''}, userSignOut: ()=>{}});
+export const AuthContext = createContext<any>(defaultValue);
 
 export const AuthProvider = ({children}: any) => {
     const [currentUser, setCurrentUser] = useState<any>(null);
