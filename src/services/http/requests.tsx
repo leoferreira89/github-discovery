@@ -8,7 +8,7 @@ export const HTTPContext = createContext<any>(defaultValue);
 const baseUrl = 'https://api.github.com/search/repositories?q=';
 
 export const HTTPProvider = ({children}: any) => {
-    const token = process.env.GIT_TOKEN || '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';
+    const token = process.env.GIT_TOKEN || 'TOKEN_HERE';
 
     const getRepositoriesByTopic = async ({topic, perPage = 10, page = 1, sort=''}: {topic: string, perPage: number, page: number, sort: string}) => {
         const axiosOptions = {headers: {
@@ -16,7 +16,7 @@ export const HTTPProvider = ({children}: any) => {
             'Authorization': `Bearer ${token}`
           }}
           try {
-              const response = await axios.get(`${baseUrl}topic:${topic}&per_page=${perPage}&page=${page}&sort=${sort}`, axiosOptions) // , axiosOptions
+              const response = await axios.get(`${baseUrl}topic:${topic}&per_page=${perPage}&page=${page}&sort=${sort}`) // , axiosOptions
               return response.data;
             } catch (error) {
               console.error(error);
@@ -30,7 +30,7 @@ export const HTTPProvider = ({children}: any) => {
             'Authorization': `Bearer ${token}`
           }}
         try {
-            const requests = topics.map((topic: any)=>axios.get(`${baseUrl}topic:${topic.name}&per_page=${perPage}&page=${page}&sort=${topic.activeSort}`, axiosOptions))
+            const requests = topics.map((topic: any)=>axios.get(`${baseUrl}topic:${topic.name}&per_page=${perPage}&page=${page}&sort=${topic.activeSort}`))
             const result = await axios.all(requests);
             return result;
         } catch (error) {
