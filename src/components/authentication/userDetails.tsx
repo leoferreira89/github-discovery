@@ -16,8 +16,6 @@ export function UserDetails({t}:{t: any}) {
     const [user, setUser] = useState<any>();
     
     useEffect(()=> {
-        console.log("user", currentUser);
-        
         setUser(currentUser);
     },[currentUser])
 

@@ -24,6 +24,7 @@ const signUp = (e: any) => {
         navigate('/discovery');
     }).catch((error: Error) => {
         console.log("Error while trying to login", error);
+        // TODO: Handle Error
     })
 }
 
